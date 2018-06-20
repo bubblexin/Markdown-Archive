@@ -2,6 +2,16 @@
 
 [TOC]
 
+### 官方文档及 Demo
+
+[互动直播ILVB](https://cloud.tencent.com/product/ilvb#wiki)
+
+[官方 Demo-随心播**iLiveSDK_Android_Suixinbo**](https://github.com/zhaoyang21cn/iLiveSDK_Android_Suixinbo)
+
+[简单直播](https://github.com/zhaoyang21cn/iLiveSDK_Android_LiveDemo)
+
+
+
 ### 引入 SDK
 
 在 Android Studio 中添加依赖，以 aar 的形式导入。(X.X.X 替换成对应版本号 比如 1.0.1)
