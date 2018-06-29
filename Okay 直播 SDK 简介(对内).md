@@ -612,6 +612,55 @@ mTencentInteraction.downToMic(new TencentCallback() {
 
 
 
+### 一些流程的梳理
+
+```java
+/* 直播接口类，用户使用的时候直接使用此类，此类使用单例模式，new 此类实例的时候实现的是此类的子类 LiveMgr，       *  具体的方法如初始化、创建房间、加入房间等操作具体实现都在 LiveMgr 中
+*/
+public abstract class ILVLiveManager {
+	/* 内部私有静态实例，目的是实现延迟加载 */
+	private static class ILVBLiveHolder {
+    	private static ILVLiveManager instance = new LiveMgr();
+	}
+    ...
+}
+
+// ILVLiveManager 与 ILiveRoomManager 的关系
+/**
+ ** ILVLiveManager 的具体实现类，在其 init 的时候，同时 init 了 ILiveRoomManager 的实例，调用其中的各 种方法的时候，实则是调用到了 ILiveRoomManager 中的方法
+ **/
+public class LiveMgr extends ILVLiveManager implements TIMMessageListener {
+	@Override
+    public int init(ILVLiveConfig config) {
+        //使用SDK消息过滤机制 否则用他们自己的
+        if (config.getRoomMessageListener() == null)
+            config.messageListener(this);
+        liveConfig = config;
+
+        ILiveLog.ki(TAG, "init", new ILiveLog.LogExts().put("version", getVersion()));
+        return ILiveRoomManager.getInstance().init(config);
+    }
+    
+    @Override
+    public int createRoom(int roomId, ILVLiveRoomOption hostOption, ILiveCallBack callBack) {
+        // 实际上是调用了 ILiveRoomManager 中的 createRoom 方法
+        return ILiveRoomManager.getInstance().createRoom(roomId, hostOption, callBack);
+    }
+    
+    /**
+     ** 为其设置渲染屏幕的时候，实际上是在 ILiveRoomManager 中初始化了 AvRootView
+     **/
+    @Override
+    public int setAvVideoView(AVRootView view) {
+        return ILiveRoomManager.getInstance().initAvRootView(view);
+    }
+    ...
+}
+   
+```
+
+
+
 ### 常见问题
 
 * so 文件冲突
